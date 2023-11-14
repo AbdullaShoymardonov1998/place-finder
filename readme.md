@@ -1,4 +1,4 @@
-# Track your habits
+# Find your favourite place
 
 ## Backend
 
