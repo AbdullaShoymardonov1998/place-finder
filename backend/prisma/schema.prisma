@@ -16,8 +16,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  habits Habit[]
-  role   UserRoles @default(USER)
+  role    UserRoles @default(USER)
+  ratings Rating[]
 
   @@map("users")
 }
@@ -32,29 +32,82 @@ model RestoreAccountToken {
   @@map("restore_account_tokens")
 }
 
-model Habit {
+model Place {
   id          String   @id @default(uuid())
-  title       String
-  description String   @default("")
+  title       String   @db.VarChar(100)
+  description String   @db.VarChar(1000)
+  address     String   @db.VarChar(500)
+  phone       String   @map("phone_number")
+  email       String   @unique @map("email_address")
+  longitude   Float    @default(-41.02701572063517)
+  latitude    Float    @default(35.06476733179137)
   createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id")
+  pictures Picture[]
 
-  activities Activity[]
+  places           NearbyPlace[]      @relation(name: "places")
+  nearbyPlaces     NearbyPlace[]      @relation(name: "nearbyPlaces")
+  placeCategoryMap PlaceCategoryMap[]
+  ratings          Rating[]
 
-  @@map("habits")
+  @@map("places")
 }
 
-model Activity {
+model Rating {
   id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
+  value     Int      @map("rating_value")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 
-  habitId String @map("habit_id")
-  habit   Habit  @relation(fields: [habitId], references: [id])
+  placeId String @map("place_id")
+  place   Place  @relation(fields: [placeId], references: [id])
 
-  @@map("activities")
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("ratings")
+}
+
+model NearbyPlace {
+  id String @id @default(uuid())
+
+  placeId String @map("place_id")
+  place   Place  @relation("places", fields: [placeId], references: [id])
+
+  nearybyPlaceId String @map("nearby_place_id")
+  nearbyPlace    Place  @relation("nearbyPlaces", fields: [nearybyPlaceId], references: [id])
+
+  @@unique([placeId, nearybyPlaceId])
+  @@map("nearby_places")
+}
+
+model PlaceCategoryMap {
+  id      String @id @default(uuid())
+  place   Place  @relation(fields: [placeId], references: [id])
+  placeId String
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  @@map("place_category_maps")
+}
+
+model Category {
+  id               String             @id @default(uuid()) @map("category_id")
+  title            String             @db.VarChar(100)
+  placeCategoryMap PlaceCategoryMap[]
+}
+
+model Picture {
+  id        Int      @id @default(autoincrement())
+  fileName  String   @map("file_name")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  placeId String @map("place_id")
+  place   Place  @relation(fields: [placeId], references: [id])
+
+  @@map("pictures")
 }
 
 enum UserRoles {

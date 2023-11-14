@@ -16,7 +16,8 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Habit maker')
+    .setTitle('Place Finder')
+    .setDescription('Place Finder application for locals and tourists')
     .setVersion('1.0')
     .build()
   const document = SwaggerModule.createDocument(app, config)

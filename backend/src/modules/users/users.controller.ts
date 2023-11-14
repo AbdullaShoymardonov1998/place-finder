@@ -11,7 +11,7 @@ import { IUser } from '@/modules/users/dto/user.interface'
 import { User } from '@/decorators/user.decorator'
 import { GetProfileResponseDto } from '@/modules/users/dto/get-profile.dto'
 
-@ApiTags('User')
+@ApiTags('Users')
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
