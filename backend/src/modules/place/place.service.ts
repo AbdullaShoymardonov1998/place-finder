@@ -48,6 +48,12 @@ export class PlaceService {
       where: { id },
       include: {
         pictures: true,
+        ratings: {
+          include: {
+            user: true,
+            place: true,
+          },
+        },
         placeCategoryMap: {
           include: {
             category: true,
@@ -82,6 +88,12 @@ export class PlaceService {
       include: {
         place: true,
         nearbyPlace: true,
+        ratings: {
+          include: {
+            user: true,
+            place: true,
+          },
+        },
       },
     })
     const nearbyPlacesInfo = []
@@ -124,6 +136,12 @@ export class PlaceService {
       skip,
       include: {
         pictures: true,
+        ratings: {
+          include: {
+            user: true,
+            place: true,
+          },
+        },
       },
     })
 

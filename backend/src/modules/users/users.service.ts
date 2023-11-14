@@ -2,7 +2,10 @@ import { PrismaService } from '@/core/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 import { IUser } from '@/modules/users/dto/user.interface'
 import { GetProfileResponseDto } from './dto/get-profile.dto'
-import { Prisma } from '@prisma/client'
+import { Prisma, UserRoles } from '@prisma/client'
+import { PASSWORD_SALT } from '@/consts/password-salt'
+import * as bcrypt from 'bcrypt'
+import { CreateUserDto } from './dto/create-user.dto'
 
 @Injectable()
 export class UsersService {
@@ -22,6 +25,18 @@ export class UsersService {
         role: true,
         createdAt: true,
         updatedAt: true,
+      },
+    })
+  }
+
+  async createProfile(body: CreateUserDto) {
+    return await this.prisma.user.create({
+      data: {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        password: await bcrypt.hash(body.password, PASSWORD_SALT),
+        role: UserRoles.USER,
       },
     })
   }

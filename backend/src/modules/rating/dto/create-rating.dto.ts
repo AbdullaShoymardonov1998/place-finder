@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsString, Max, Min } from 'class-validator'
 
 export class CreateRatingDto {
   @IsString()
@@ -11,10 +11,14 @@ export class CreateRatingDto {
   placeId: string
 
   @IsNumber()
+  @Max(5)
+  @Min(1)
   @IsNotEmpty()
   @ApiProperty({
     description: 'User rating',
     example: 5,
+    maximum: 5,
+    minimum: 1,
   })
   value: number
 }

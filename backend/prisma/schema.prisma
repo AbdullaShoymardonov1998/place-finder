@@ -63,8 +63,10 @@ model Rating {
   placeId String @map("place_id")
   place   Place  @relation(fields: [placeId], references: [id])
 
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  userId        String       @map("user_id")
+  user          User         @relation(fields: [userId], references: [id])
+  NearbyPlace   NearbyPlace? @relation(fields: [nearbyPlaceId], references: [id])
+  nearbyPlaceId String?
 
   @@map("ratings")
 }
@@ -74,6 +76,8 @@ model NearbyPlace {
 
   placeId String @map("place_id")
   place   Place  @relation("places", fields: [placeId], references: [id])
+
+  ratings Rating[]
 
   nearybyPlaceId String @map("nearby_place_id")
   nearbyPlace    Place  @relation("nearbyPlaces", fields: [nearybyPlaceId], references: [id])

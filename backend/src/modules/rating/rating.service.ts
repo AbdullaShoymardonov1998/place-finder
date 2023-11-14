@@ -13,24 +13,26 @@ export class RatingService {
         placeId: body.placeId,
       },
     })
-    if (existingRating) {
-      throw new BadRequestException('User already gave a rating')
-    } else {
-      return this.prisma.rating.create({
-        data: {
-          place: {
-            connect: {
-              id: body.placeId,
-            },
-          },
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-          value: body.value,
-        },
-      })
+
+    for (const rating of existingRating) {
+      if (rating.placeId === body.placeId && rating.userId === userId) {
+        throw new BadRequestException('User already gave a rating')
+      }
     }
+    return this.prisma.rating.create({
+      data: {
+        place: {
+          connect: {
+            id: body.placeId,
+          },
+        },
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        value: body.value,
+      },
+    })
   }
 }

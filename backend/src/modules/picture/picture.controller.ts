@@ -9,16 +9,23 @@ import {
   Post,
   Put,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { PictureService } from './picture.service'
-import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 import { UploadFileDto } from './dto/upload-picture-by-file.dto'
 import { UploadPictureByUrl } from './dto/upload-picture-by-url.dto'
 import { UpdatePictureDto } from './dto/update-picture.dto'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 
 @UsePipes(new ValidationPipe())
 @ApiTags('Pictures')
@@ -27,6 +34,8 @@ export class PictureController {
   constructor(private readonly pictureService: PictureService) {}
 
   @Post('upload-by-file')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Upload file for Places' })
   @HttpCode(HttpStatus.CREATED)
@@ -39,6 +48,8 @@ export class PictureController {
   }
 
   @Post('upload-by-url')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Upload file by URL' })
   @HttpCode(HttpStatus.CREATED)
   async uploadImageByUrl(@Body() pictureDetails: UploadPictureByUrl) {
@@ -46,6 +57,8 @@ export class PictureController {
   }
 
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all pictures' })
   @HttpCode(HttpStatus.OK)
   async getAllPictures() {
@@ -53,6 +66,8 @@ export class PictureController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update picture' })
   @ApiConsumes('multipart/form-data')
   @HttpCode(HttpStatus.OK)
@@ -65,6 +80,8 @@ export class PictureController {
     return this.pictureService.updatePicture(file, pictureDetails, id)
   }
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete picture by ID' })
   @HttpCode(HttpStatus.OK)
   async deletePictureById(@Param('id') id: number) {

@@ -10,12 +10,14 @@ import {
   Delete,
   ValidationPipe,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common'
 import { CreatePlaceDto } from './dto/create-place.dto'
 import { PlaceService } from './place.service'
 import { GetPlaceResponseDto } from './dto/response-place.dto'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { PlaceDto } from './dto/places.dto'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 
 @ApiTags('Places')
 @Controller({ path: 'places', version: '1' })
@@ -23,6 +25,8 @@ export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create place information' })
@@ -31,6 +35,8 @@ export class PlaceController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get place information' })
   async getPlaceById(@Param('id') id: string): Promise<GetPlaceResponseDto> {
@@ -38,6 +44,8 @@ export class PlaceController {
   }
 
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get all places information' })
   async getAllPlaces(@Query() query: PlaceDto) {
@@ -45,6 +53,8 @@ export class PlaceController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Delete place information' })
   async deletePlaceById(@Param('id') id: string) {
